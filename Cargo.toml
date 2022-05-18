@@ -1,0 +1,7 @@
+[workspace]
+members = ["cgroup-sock-test", "cgroup-sock-test-common", "xtask"]
+
+[patch.crates-io]
+aya = {git = "https://github.com/dave-tucker/aya", branch = "cgroup_sock" }
+[patch."https://github.com/aya-rs/aya"]
+aya = {git = "https://github.com/dave-tucker/aya", branch = "cgroup_sock" }
