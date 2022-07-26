@@ -2,12 +2,12 @@
 #![no_main]
 
 use aya_bpf::{
-    macros::sock_addr,
+    macros::cgroup_sock_addr,
     programs::SockAddrContext,
 };
 use aya_log_ebpf::info;
 
-#[sock_addr(connect4)]
+#[cgroup_sock_addr(connect4)]
 pub fn cgroup_sock_test(ctx: SockAddrContext) -> i32 {
     match unsafe { try_cgroup_sock_test(ctx) } {
         Ok(ret) => ret,

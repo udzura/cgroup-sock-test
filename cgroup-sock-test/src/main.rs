@@ -1,5 +1,5 @@
 use aya::{include_bytes_aligned, Bpf};
-use aya::programs::SockAddr;
+use aya::programs::CgroupSockAddr;
 use aya_log::BpfLogger;
 use clap::Parser;
 use log::info;
@@ -39,7 +39,7 @@ async fn main() -> Result<(), anyhow::Error> {
         "../../target/bpfel-unknown-none/release/cgroup-sock-test"
     ))?;
     BpfLogger::init(&mut bpf)?;
-    let program: &mut SockAddr = bpf.program_mut("connect4").unwrap().try_into()?;
+    let program: &mut CgroupSockAddr = bpf.program_mut("connect4").unwrap().try_into()?;
     let cgroup = std::fs::File::open(opt.cgroup_path)?;
     program.load()?;
     program.attach(cgroup)?;
