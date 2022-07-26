@@ -1,5 +1,6 @@
-use aya::{include_bytes_aligned, Bpf};
+use aya::maps::*;
 use aya::programs::CgroupSockAddr;
+use aya::{include_bytes_aligned, Bpf};
 use aya_log::BpfLogger;
 use clap::Parser;
 use log::info;
@@ -46,6 +47,13 @@ async fn main() -> Result<(), anyhow::Error> {
 
     info!("Waiting for Ctrl-C...");
     signal::ctrl_c().await?;
+
+    let result = HashMap::try_from(bpf.map_mut("ADDRS")?)?;
+
+    for (k, _) in result.iter() {
+        println!("Addr: {}", k);
+    }
+
     info!("Exiting...");
 
     Ok(())
