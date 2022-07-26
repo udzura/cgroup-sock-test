@@ -1,7 +1,7 @@
 use aya::maps::*;
 use aya::programs::CgroupSockAddr;
 use aya::{include_bytes_aligned, Bpf};
-use aya_log::BpfLogger;
+//use aya_log::BpfLogger;
 use clap::Parser;
 use log::info;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
@@ -39,7 +39,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let mut bpf = Bpf::load(include_bytes_aligned!(
         "../../target/bpfel-unknown-none/release/cgroup-sock-test"
     ))?;
-    BpfLogger::init(&mut bpf)?;
+    // BpfLogger::init(&mut bpf)?;
     let program: &mut CgroupSockAddr = bpf.program_mut("connect4").unwrap().try_into()?;
     let cgroup = std::fs::File::open(opt.cgroup_path)?;
     program.load()?;
@@ -48,10 +48,10 @@ async fn main() -> Result<(), anyhow::Error> {
     info!("Waiting for Ctrl-C...");
     signal::ctrl_c().await?;
 
-    let result = HashMap::try_from(bpf.map_mut("ADDRS")?)?;
+    let result = HashMap::<_, u32, i32>::try_from(bpf.map_mut("ADDRS")?)?;
 
-    for (k, _) in result.iter() {
-        println!("Addr: {}", k);
+    for r in result.iter() {
+        println!("Addr: {}", r?.0);
     }
 
     info!("Exiting...");
